@@ -1,5 +1,9 @@
 # IN DEVELOPMENT
 
++ get trash icon working
++ get API integration with Signature.io. Use evented system so you can easily hook into your own API.
++ get Done confirmation interface working on signature-chrome
+
 # signature-js
 
 The JavaScript that powers the front-end signing interface for Signature.io.
