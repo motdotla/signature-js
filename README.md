@@ -1,3 +1,5 @@
+# IN DEVELOPMENT
+
 # signature-js
 
 The JavaScript that powers the front-end signing interface of Signature.io.

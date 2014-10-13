@@ -4,6 +4,8 @@
     this.script = this.CurrentlyExecutedScript();
     this.jafja = undefined;
     this.state = undefined;
+    this.text_element_json = {};
+    this.signature_element_json = {};
 
     return this;
   };
@@ -35,14 +37,33 @@
       jafja.bind('signature_document.fabric.clicked', function(result) {
         console.log('signature_document.fabric.clicked', result);
         if (_this.state === "text_mode") {
+          _this.text_element_json.x = result.x;
+          _this.text_element_json.y = result.y;
+          _this.text_element_json.page_number = result.page_number;
+
           signature_chrome.promptText();
+        }
+        if (_this.state === "sign_mode") {
+          _this.signature_element_json.x = result.x;
+          _this.signature_element_json.y = result.y;
+          _this.signature_element_json.page_number = result.page_number;
+
+          signature_chrome.promptSignature();
         }
       });
 
       jafja.bind('signature_chrome.text', function(text) {
-        alert(text);
-        // var payload = {x:1,y:1,content:text,page_number:1}
-        //signature_document.AddTextElement(text);
+        _this.text_element_json.content = text;
+        signature_signing.drawTextElement(_this.text_element_json);
+        // fire API request here to save the element to the db
+        _this.text_element_json = {};
+      });
+
+      jafja.bind('signature_chrome.signature', function(url) {
+        _this.signature_element_json.url = url;
+        signature_signing.drawSignatureElement(_this.signature_element_json);
+        // fire API request here to save the element to the db
+        _this.signature_element_json = {};
       });
 
     } else {
