@@ -1,8 +1,8 @@
 # IN DEVELOPMENT
 
 + get trash icon working
++ start with API call to mark document as signed - using an event coming from siganture-chrome, passed into signature-js.
 + get API integration with Signature.io. Use evented system so you can easily hook into your own API.
-+ get Done confirmation interface working on signature-chrome
 
 # signature-js
 
