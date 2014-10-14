@@ -30,12 +30,10 @@
       });
 
       jafja.bind('signature_chrome.state.changed', function(result) {
-        console.log('signature_chrome.state.changed', result);
         _this.state = result.current;
       });
 
       jafja.bind('signature_document.fabric.clicked', function(result) {
-        console.log('signature_document.fabric.clicked', result);
         if (_this.state === "text_mode") {
           _this.text_element_json.x = result.x;
           _this.text_element_json.y = result.y;
@@ -64,6 +62,14 @@
         signature_signing.drawSignatureElement(_this.signature_element_json);
         // fire API request here to save the element to the db
         _this.signature_element_json = {};
+      });
+
+      jafja.bind('signature_document.object.selected', function(result) {
+        signature_chrome.setState(signature_document.document, "trash_mode");
+      });
+
+      jafja.bind('signature_chrome.trash_mode.clicked', function(result) {
+        signature_signing.removeSelectedObject();
       });
 
     } else {
