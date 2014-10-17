@@ -46,6 +46,8 @@
 
         if (element_update_url) {
           _this.Post(element_update_url, result, function(resp) { });
+        } else {
+          console.error("Moved object but not updated");
         }
       });
 

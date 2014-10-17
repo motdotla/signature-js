@@ -66,6 +66,8 @@ return d+=this._fontAscent?this._fontAscent/5*this.lineHeight:0,['<g transform="
 
         if (element_update_url) {
           _this.Post(element_update_url, result, function(resp) { });
+        } else {
+          console.error("Moved object but not updated");
         }
       });
 
