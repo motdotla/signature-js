@@ -22,7 +22,7 @@ module.exports = (grunt) ->
       server:
         options:
           hostname: "*"
-          port: 3000,
+          port: 3001,
           base: './public'
           keepalive: true
     simplemocha:

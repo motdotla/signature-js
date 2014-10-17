@@ -2,6 +2,8 @@
 
   var SignatureJs = function() {
     this.script = this.CurrentlyExecutedScript();
+    this.signing_id = this.script.getAttribute("data-signature-signing-id");
+    this.signature_api_root = "https://signature-api.herokuapp.com";
     this.jafja = undefined;
     this.state = undefined;
     this.text_element_json = {};
@@ -59,8 +61,14 @@
 
       jafja.bind('signature_chrome.signature', function(url) {
         _this.signature_element_json.url = url;
+        _this.signature_element_json.signing_id = _this.signing_id;
         signature_signing.drawSignatureElement(_this.signature_element_json);
-        // fire API request here to save the element to the db
+
+        var signature_element_create_url = _this.signature_api_root + "/api/v0/signature_elements/create.json";
+        _this.Post(signature_element_create_url, _this.signature_element_json, function(resp) {
+          console.log(resp);
+        });
+
         _this.signature_element_json = {};
       });
 
@@ -85,6 +93,29 @@
       script      = scripts[scripts.length - 1];  
     }
     return script;
+  };
+
+  SignatureJs.prototype.Post = function(url, data, callback){
+    // only pass string values to API
+    for (var k in data) {
+      if (data.hasOwnProperty(k)) {
+        data[k] = String(data[k]);
+      }
+    }
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/json");
+    xmlhttp.onreadystatechange = function(){
+      if (xmlhttp.readyState==4){
+        if (xmlhttp.status==200){
+          callback(JSON.parse(xmlhttp.responseText));
+        } else {
+          console.error("Ajax error");
+        }
+      }
+    };
+
+    xmlhttp.send(JSON.stringify(data));
   };
 
   exports.SignatureJs = SignatureJs;

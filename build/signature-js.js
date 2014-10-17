@@ -1,4 +1,4 @@
-/*! signature-js.js - 0.0.1 - 2014-10-14 - motdotla */
+/*! signature-js.js - 0.0.1 - 2014-10-16 - motdotla */
 /*! jafja.js - 0.0.1 - 2014-09-30 - mot */
 var MicroEvent=function(){};MicroEvent.prototype={bind:function(a,b){this._events=this._events||{},this._events[a]=this._events[a]||[],this._events[a].push(b)},unbind:function(a,b){this._events=this._events||{},a in this._events!=!1&&this._events[a].splice(this._events[a].indexOf(b),1)},trigger:function(a){if(this._events=this._events||{},a in this._events!=!1)for(var b=0;b<this._events[a].length;b++)this._events[a][b].apply(this,Array.prototype.slice.call(arguments,1))}},MicroEvent.mixin=function(a){for(var b=["bind","unbind","trigger"],c=0;c<b.length;c++)"function"==typeof a?a.prototype[b[c]]=MicroEvent.prototype[b[c]]:a[b[c]]=MicroEvent.prototype[b[c]]},"undefined"!=typeof module&&"exports"in module&&(module.exports=MicroEvent),function(a){var b=function(){return this};MicroEvent.mixin(b),a.Jafja=b}(this);var jafja=new Jafja;
 
@@ -22,6 +22,8 @@ return d+=this._fontAscent?this._fontAscent/5*this.lineHeight:0,['<g transform="
 
   var SignatureJs = function() {
     this.script = this.CurrentlyExecutedScript();
+    this.signing_id = this.script.getAttribute("data-signature-signing-id");
+    this.signature_api_root = "https://signature-api.herokuapp.com";
     this.jafja = undefined;
     this.state = undefined;
     this.text_element_json = {};
@@ -79,8 +81,14 @@ return d+=this._fontAscent?this._fontAscent/5*this.lineHeight:0,['<g transform="
 
       jafja.bind('signature_chrome.signature', function(url) {
         _this.signature_element_json.url = url;
+        _this.signature_element_json.signing_id = _this.signing_id;
         signature_signing.drawSignatureElement(_this.signature_element_json);
-        // fire API request here to save the element to the db
+
+        var signature_element_create_url = _this.signature_api_root + "/api/v0/signature_elements/create.json";
+        _this.Post(signature_element_create_url, _this.signature_element_json, function(resp) {
+          console.log(resp);
+        });
+
         _this.signature_element_json = {};
       });
 
@@ -89,7 +97,6 @@ return d+=this._fontAscent?this._fontAscent/5*this.lineHeight:0,['<g transform="
       });
 
       jafja.bind('signature_chrome.trash_mode.clicked', function(result) {
-        console.log("trash_mode clicked!");
         signature_signing.removeSelectedObject();
       });
 
@@ -106,6 +113,29 @@ return d+=this._fontAscent?this._fontAscent/5*this.lineHeight:0,['<g transform="
       script      = scripts[scripts.length - 1];  
     }
     return script;
+  };
+
+  SignatureJs.prototype.Post = function(url, data, callback){
+    // only pass string values to API
+    for (var k in data) {
+      if (data.hasOwnProperty(k)) {
+        data[k] = String(data[k]);
+      }
+    }
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", url, true);
+    xmlhttp.setRequestHeader("Content-type", "application/json");
+    xmlhttp.onreadystatechange = function(){
+      if (xmlhttp.readyState==4){
+        if (xmlhttp.status==200){
+          callback(JSON.parse(xmlhttp.responseText));
+        } else {
+          console.error("Ajax error");
+        }
+      }
+    };
+
+    xmlhttp.send(JSON.stringify(data));
   };
 
   exports.SignatureJs = SignatureJs;
