@@ -1,8 +1,8 @@
 # IN DEVELOPMENT
 
-+ API for singature_element.move
-+ API for text_element.move
++ API call to delete an element
 + API call to mark document signed
++ Loading screen for the share url - when it is not been converted and ready for sharing
 
 # signature-js
 
