@@ -74,8 +74,14 @@ return d+=this._fontAscent?this._fontAscent/5*this.lineHeight:0,['<g transform="
 
       jafja.bind('signature_chrome.text', function(text) {
         _this.text_element_json.content = text;
+        _this.text_element_json.signing_id = _this.signing_id;
         signature_signing.drawTextElement(_this.text_element_json);
         // fire API request here to save the element to the db
+        var text_element_create_url = _this.signature_api_root + "/api/v0/text_elements/create.json";
+        _this.Post(text_element_create_url, _this.text_element_json, function(resp) {
+          console.log(resp);
+        });
+
         _this.text_element_json = {};
       });
 
