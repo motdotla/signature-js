@@ -35,6 +35,20 @@
         _this.state = result.current;
       });
 
+      jafja.bind('signature_document.object.modified', function(result) {
+        var element_update_url;
+        if (result.type == "signature_element") {
+          element_update_url = _this.signature_api_root + "/api/v0/signature_elements/" + result.id + "/update.json";
+        }
+        if (result.type == "text_element") {
+          element_update_url = _this.signature_api_root + "/api/v0/text_elements/" + result.id + "/update.json";
+        }
+
+        if (element_update_url) {
+          _this.Post(element_update_url, result, function(resp) { });
+        }
+      });
+
       jafja.bind('signature_document.fabric.clicked', function(result) {
         if (_this.state === "text_mode") {
           _this.text_element_json.x = result.x;
@@ -55,27 +69,27 @@
       jafja.bind('signature_chrome.text', function(text) {
         _this.text_element_json.content = text;
         _this.text_element_json.signing_id = _this.signing_id;
-        signature_signing.drawTextElement(_this.text_element_json);
-        // fire API request here to save the element to the db
-        var text_element_create_url = _this.signature_api_root + "/api/v0/text_elements/create.json";
-        _this.Post(text_element_create_url, _this.text_element_json, function(resp) {
-          console.log(resp);
-        });
+        signature_signing.drawTextElement(_this.text_element_json, function(element) {
+          var text_element_create_url = _this.signature_api_root + "/api/v0/text_elements/create.json";
+          _this.Post(text_element_create_url, _this.text_element_json, function(resp) {
+            element.text_element_id = resp.text_elements[0].id;
+          });
 
-        _this.text_element_json = {};
+          _this.text_element_json = {};
+        });
       });
 
       jafja.bind('signature_chrome.signature', function(url) {
         _this.signature_element_json.url = url;
         _this.signature_element_json.signing_id = _this.signing_id;
-        signature_signing.drawSignatureElement(_this.signature_element_json);
-
-        var signature_element_create_url = _this.signature_api_root + "/api/v0/signature_elements/create.json";
-        _this.Post(signature_element_create_url, _this.signature_element_json, function(resp) {
-          console.log(resp);
+        var element = signature_signing.drawSignatureElement(_this.signature_element_json, function(element) {
+           var signature_element_create_url = _this.signature_api_root + "/api/v0/signature_elements/create.json";
+          _this.Post(signature_element_create_url, _this.signature_element_json, function(resp) {
+            element.signature_element_id = resp.signature_elements[0].id;
+          });
+         
+          _this.signature_element_json = {};
         });
-
-        _this.signature_element_json = {};
       });
 
       jafja.bind('signature_document.object.selected', function(result) {
