@@ -1,8 +1,8 @@
 # IN DEVELOPMENT
 
-+ start with API call to mark document as signed - using an event coming from siganture-chrome, passed into signature-js.
-+ get API integration with Signature.io. Use evented system so you can easily hook into your own API.
-++ signature_elements/create.json?x,y,page_number,signing_id
++ API for singature_element.move
++ API for text_element.move
++ API call to mark document signed
 
 # signature-js
 
