@@ -1,6 +1,5 @@
 # IN DEVELOPMENT
 
-+ API call to delete an element
 + API call to mark document signed
 + Loading screen for the share url - when it is not been converted and ready for sharing
 
