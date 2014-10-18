@@ -2,10 +2,10 @@
 
   var SignatureJs = function() {
     this.script = this.CurrentlyExecutedScript();
-    this.signing_id = this.script.getAttribute("data-signature-signing-id");
     this.signature_api_root = "https://signature-api.herokuapp.com";
     this.jafja = undefined;
     this.state = undefined;
+    this.signing_id = undefined;
     this.text_element_json = {};
     this.signature_element_json = {};
 
@@ -29,6 +29,15 @@
         signature_signing.multiplier = result.multiplier;
         signature_signing.init();
         signature_chrome.init(signature_document.document);
+      });
+
+      jafja.bind('signature_signing.rendered', function(result) {
+        _this.signing_id = result.id;
+
+        // document has already been signed
+        if (result.status == "signed") {
+          signature_chrome.setState(signature_document.document, "signed_mode");
+        }
       });
 
       jafja.bind('signature_chrome.state.changed', function(result) {
@@ -92,6 +101,11 @@
          
           _this.signature_element_json = {};
         });
+      });
+
+      jafja.bind('signature_chrome.confirmation_yes.clicked', function(url) {
+        var signing_mark_signed_url = _this.signature_api_root + "/api/v0/signings/" + _this.signing_id + "/mark_signed.json";
+        _this.Post(signing_mark_signed_url, {}, function(resp) { });
       });
 
       jafja.bind('signature_document.object.selected', function(result) {

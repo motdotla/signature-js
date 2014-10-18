@@ -1,6 +1,5 @@
 # IN DEVELOPMENT
 
-+ API call to mark document signed
 + Loading screen for the share url - when it is not been converted and ready for sharing
 
 # signature-js
