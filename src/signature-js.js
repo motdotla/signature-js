@@ -98,6 +98,22 @@
         signature_chrome.setState(signature_document.document, "trash_mode");
       });
 
+      jafja.bind('signature_signing.object.removed', function(result) {
+        var element_delete_url;
+        if (result.type == "signature_element") {
+          element_delete_url = _this.signature_api_root + "/api/v0/signature_elements/" + result.id + "/delete.json";
+        }
+        if (result.type == "text_element") {
+          element_delete_url = _this.signature_api_root + "/api/v0/text_elements/" + result.id + "/delete.json";
+        }
+
+        if (element_delete_url) {
+          _this.Post(element_delete_url, result, function(resp) { });
+        } else {
+          console.error("Object unable to be deleted");
+        }
+      });
+
       jafja.bind('signature_chrome.trash_mode.clicked', function(result) {
         signature_signing.removeSelectedObject();
       });
