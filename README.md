@@ -1,7 +1,3 @@
-# IN DEVELOPMENT
-
-+ Loading screen for the share url - when it is not been converted and ready for sharing
-
 # signature-js
 
 The JavaScript that powers the front-end signing interface for Signature.io.
